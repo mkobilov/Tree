@@ -6,11 +6,11 @@
 #include <assert.h>
 #include <stdlib.h>
 
-
-#define _MAX_LINE_LENGTH_ 20
-#define _MAX_ID_LENGTH_ 5
-#define _MAX_RW_LINE_LENGTH_ 1000
-
+enum line_l{
+ _MAX_LINE_LENGTH_  = 20,
+ _MAX_ID_LENGTH_ = 5,
+ _MAX_RW_LINE_LENGTH_ = 1000
+}
 typedef struct Node{
 	
 	char value[_MAX_LINE_LENGTH_];
