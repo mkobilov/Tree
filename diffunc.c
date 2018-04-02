@@ -27,13 +27,31 @@ Node* CreateExample(){
 	
 	
 
-	Node* root = CN(ELEV,OPER);
+	Node* root = CN(PLUS,OPER);
 	root->left = CN(DIV,OPER);
-	root->left->right = CN(2,NUM);
+	root->left->right = CN(COS,FUNC);
+	root->left->right->left = CN(PLUS,OPER);
+	root->left->right->left->left = CN(ELEV,OPER);
+	root->left->right->left->left->left = CN(SIN,FUNC);
+	root->left->right->left->left->left->left = CN(x,VAR);
+	root->left->right->left->left->right = CN(2,NUM);
+	root->left->right->left->right = CN(MULT,OPER);
+	root->left->right->left->right->left = CN(4,NUM);
+	root->left->right->left->right->right = CN(x,VAR);
+	root->left->left = CN(ELEV,OPER);
+	root->left->left->right = CN(PLUS,OPER);
+	root->left->left->right->left = CN(SIN,FUNC);
+	root->left->left->right->left->left = CN(x,VAR);
+	root->left->left->right->right = CN(LN,FUNC);
+	root->left->left->right->right->left = CN(MINUS,OPER);
+	root->left->left->right->right->left->left = CN(ELEV,OPER);
+	root->left->left->right->right->left->left->left = CN(x,VAR);
+	root->left->left->right->right->left->left->right = CN(2,NUM);
+	root->left->left->right->right->left->right = CN(4,NUM);
+	root->left->left->left = CN(x,VAR);
 	
-	root->left->left = CN(x,VAR);
 	
-	root->right = CN(2,NUM);
+	root->right = CN(3,NUM);
 	
 	
 	return root;
@@ -120,7 +138,7 @@ Node* Differentiate(const Node* src){
 			}
 			if(src->value == DIV){
 				Node* L = CreateNewNode(OPER,MINUS,CreateNewNode(OPER,MULT,Differentiate(src->left),Copy(src->right)),CreateNewNode(OPER,MULT,Copy(src->left),Differentiate(src->right)));
-				Node* R = CreateNewNode(OPER,MULT,Copy(src->left),Copy(src->left));
+				Node* R = CreateNewNode(OPER,MULT,Copy(src->right),Copy(src->right));
 				dst = DIV(L,R);
 			}
 			if(src->value == ELEV){
@@ -160,11 +178,11 @@ Node* Differentiate(const Node* src){
 				Node* R = CreateNewNode(NUM,-1,NULL,NULL);
 				dst = MULT(L,R);
 			}	
-			if(src->value == SIN){
+			if(src->value == SH){
 				dst = MULT(CreateNewNode(FUNC,CH,Copy(src->left),NULL),Differentiate(src->left));
 
 			}
-			if(src->value == SIN){
+			if(src->value == CH){
 				dst = MULT(CreateNewNode(FUNC,SH,Copy(src->left),NULL),Differentiate(src->left));
 
 			}	
@@ -208,7 +226,7 @@ void DeleteTree(Node* root){
 Node* Copy(const Node* node){
 	if(node){	
 
-		Node* cpy = (Node*) calloc (1,sizeof(Node));
+		Node* cpy = new (Node);
 		if(node->left)
 			cpy->left = Copy(node->left);
 		else cpy->left = NULL;
@@ -245,7 +263,7 @@ void PrintValue(FILE* file, Node* node){
 				 return;
 			}
 			case(MULT):{
-				 fprintf(file,"*");
+				 fprintf(file,"\\cdot ");
 				 return;
 			}
 			case(DIV):{
@@ -421,7 +439,7 @@ void SimplifyONE(Node* root){
 		case(NUM): return ;
 		case(VAR): return ;
 		case(OPER):{
-			if(root->value == MULT && root->left->value == 1 && root->left->type == NUM){
+			if(root->value == MULT && root->type == OPER && root->left->value == 1 && root->left->type == NUM){
 				Node* tmp;
 				DeleteTree(root->left);
 				root->left = root->right->left;
@@ -436,7 +454,7 @@ void SimplifyONE(Node* root){
 				root->right = tmp;
 				change++;
 			}
-			if(root->value == MULT && root->type == OPER && root->right->value == 1 && root->left->type == NUM){
+			if(root->value == MULT && root->type == OPER && root->right->value == 1 && root->right->type == NUM){
 				Node* tmp;
 				delete(root->right);
 				root->right = root->left->right;
@@ -568,7 +586,7 @@ void Simplification(Node* root){
 
 void TexDump(Node* root){
 	FILE* file = fopen("tdump.tex","w");
-	fprintf(file,"\\documentclass{article}\n \\usepackage[utf8]{inputenc} \n \\title{diftest} \n \\begin{document}\n $$ ");
+	fprintf(file,"\\documentclass[10pt,a2paper]{article}\n \\usepackage[utf8]{inputenc} \n \\title{diftest} \n \\begin{document}\n $$ ");
 	_TexDump(file,root);
 	fprintf(file," $$ \n  \\end{document}\n");
 	fclose(file);
@@ -600,20 +618,28 @@ void _TexDump(FILE* file,Node* root){
 			
 			
 			if(root->left->type == OPER )
-				fprintf(file,"(");
+
+				fprintf(file,"\\left(");
 			_TexDump(file,root->left);
+			
+
 			if(root->left->type == OPER )
-				fprintf(file,")");
+				fprintf(file,"\\right)");
+			
 				
 			PrintValue(file,root);
 			
 			
 			
+			if(root->type == OPER && root->value == ELEV)
+					fprintf(file,"{");
 			if(root->right->type == OPER )
-				fprintf(file,"(");
+				fprintf(file,"\\left(");
 			_TexDump(file,root->right);
 			if(root->right->type == OPER )
-				fprintf(file,")");
+				fprintf(file,"\\right)");
+			if(root->type == OPER && root->value == ELEV)
+					fprintf(file,"}");
 		}
 		if(root->type == FUNC){
 			PrintValue(file,root);

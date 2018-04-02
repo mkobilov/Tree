@@ -19,11 +19,11 @@ int main(){
 	printf("main 3\n");
 	Simplification(res);
 	printf("\n");
-	//DotDump(res);
+	DotDump(root);
 	AltSaveInfoInFile(stdout,res);
 	printf("\n");
 	
-	TexDump(res);
+	//TexDump(res);
 	
 	DeleteTree(root);
 	DeleteTree(res);
