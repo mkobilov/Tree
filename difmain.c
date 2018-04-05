@@ -1,33 +1,29 @@
-#include "diff.h"
+
+
+#include "difparser.h"
 
 int main(){
-	FILE* file_d = fopen("test.txt","w");
-	
-	Node* root = CreateExample();
-	Node* res;
 
-	printf("main 1\n");
+	Node* res;
+	
+	printf("main 2.5\n");
+	char* str = (char*) calloc (100,sizeof(char));
+	scanf("%s",str);
+	Node* root = GetG(str);
+	
 	res = Differentiate(root);
-	printf("main 2\n");
-	AltSaveInfoInFile(stdout,root);
-		printf("\n");
-	AltSaveInfoInFile(stdout,res);
-	printf("\n");
-	
-	
-	
+
 	printf("main 3\n");
 	Simplification(res);
 	printf("\n");
-	DotDump(root);
-	AltSaveInfoInFile(stdout,res);
+	//DotDump(root);
+	//AltSaveInfoInFile(stdout,res);
 	printf("\n");
 	
-	//TexDump(res);
+	TexDump(res);
 	
 	DeleteTree(root);
 	DeleteTree(res);
-	fclose(file_d);
 	
 	return 0;
 }

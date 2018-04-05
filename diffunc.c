@@ -1,4 +1,7 @@
-#include "diff.h"
+#include "difparser.h"
+
+
+int change = 0;
 
 Node* CN(int v,int t){
 	Node* dst = new (Node);

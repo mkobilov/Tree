@@ -3,10 +3,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include <math.h>
 
 
-int change = 0;
 
 enum node_type{
 	NUM = 1,
@@ -43,6 +43,7 @@ typedef struct Node{
 	
 }Node; 
 
+
 #define	ZERO CreateNewNode(NUM,0,NULL,NULL)
 #define ONE CreateNewNode(NUM,1,NULL,NULL)
 #define PLUS(L,R) CreateNewNode(OPER,PLUS,L,R)
@@ -71,7 +72,6 @@ Node SimplifyConstants(Node* root);
 void DotDump(Node* n);
 void _DotDump(Node* n, FILE* output);
 Node* CN(int v,int t);
-void Texdump(Node* root);
+void TexDump(Node* root);
 void _TexDump(FILE* file,Node* root);
-#include "diffunc.c"
 #endif
