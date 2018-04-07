@@ -11,6 +11,7 @@ extern int change ;
 Node* GetG(char* str);
 Node* GetE();
 Node* GetT();
+Node* GetS();
 Node* GetP();
 Node* GetN();
 #endif

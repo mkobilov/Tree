@@ -13,7 +13,7 @@ Node* GetG( char* str){
 	return node;
 }
 
-Node* GetE(){
+Node* GetE(){						// + -
 	Node* node = NULL;
 	Node* r;
 	Node* l = GetT();
@@ -42,14 +42,14 @@ Node* GetE(){
 	return l;
 }
 
-Node* GetT(){
+Node* GetT(){							// /  and *
 	Node* node = NULL;
 	Node* r;
-	Node* l = GetP();
+	Node* l = GetS();
 	while(s[p] == '*' || s[p] == '/'){
 		char oper = s[p];
 		p++;
-		r = GetP();
+		r = GetS();
 		if(!node){
 			if(oper == '*')		
 				node = CreateNewNode(OPER,MULT,l,r);
@@ -72,7 +72,32 @@ Node* GetT(){
 	return l;
 }
 
-Node* GetP(){
+
+Node* GetS(){							// ^
+	Node* node = NULL;
+	Node* r;
+	Node* l = GetP();
+	while(s[p] == '^'){
+		char oper = s[p];
+		p++;
+		r = GetP();
+		if(!node){
+			node = CreateNewNode(OPER,ELEV,l,r);
+			continue;
+		}
+		else{
+			l = node;	
+			node = CreateNewNode(OPER,ELEV,l,r);
+			continue;
+		}
+		
+	}
+	if(node)
+		return node;
+	return l;
+}
+
+Node* GetP(){												// braces  trygonometry and x
 	
 	if(s[p] == '('){
 		p++; printf("s[%d] = %c\n",p,s[p]);
@@ -86,11 +111,97 @@ Node* GetP(){
 		p++;
 		return CN(x,VAR);
 	}	
+	if(s[p] == 's'){
+		p++;
+		if(s[p] == 'i'){
+			p++;
+			if(s[p] == 'n'){
+				p++;
+				Node* l = GetP();
+				Node* val = CreateNewNode(FUNC,SIN,l,NULL);
+				return val;
+			}
+			printf("Invalid function \n");
+			assert(0);
+		}
+		if(s[p] == 'h'){
+			p++;
+			Node* l = GetP();
+			Node* val = CreateNewNode(FUNC,SH,l,NULL);
+			return val;
+		}
+		else{
+			printf("Invalid function\n");
+			assert(0);
+		}
+	}
+	
+	if(s[p] == 'c'){
+		p++;
+		if(s[p] == 'o'){
+			p++;
+			if(s[p] == 's'){
+				p++;
+				Node* l = GetP();
+				Node* val = CreateNewNode(FUNC,COS,l,NULL);
+				return val;
+			}
+			printf("Invalid function \n");
+			
+		}
+		if(s[p] == 'h'){
+			p++;
+			Node* l = GetP();
+			Node* val = CreateNewNode(FUNC,CH,l,NULL);
+			return val;
+		}
+		else{
+			printf("Invalid function\n");
+			assert(0);
+		}
+	}	
+	
+	if(s[p] == 't'){
+		p++;
+		if(s[p] == 'a'){
+			p++;
+			if(s[p] == 'n'){
+				p++;
+				Node* l = GetP();
+				Node* val = CreateNewNode(FUNC,TG,l,NULL);
+				return val;
+			}
+			printf("Invalid function \n");
+			assert(0);
+		}
+		else{
+			printf("Invalid function\n");
+			assert(0);
+		}
+	}
+	if(s[p] == 'l'){
+		p++;
+		if(s[p] == 'n'){
+			p++;
+
+			Node* l = GetP();
+			Node* val = CreateNewNode(FUNC,LN,l,NULL);
+			return val;
+			
+			
+		}
+		else{
+			printf("Invalid function\n");
+			assert(0);
+		}
+	}
+	
+	
 	else	
 		return GetN();
 }
 
-Node* GetN(){
+Node* GetN(){						// numbers
 	int val = 0;
 	
 	while('0' <= s[p] && s[p]<='9'){
